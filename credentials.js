@@ -9,11 +9,13 @@ function writeAwsConfigFile(rootPath, json) {
 
 	var fd = fs.openSync(rootPath + '/.aws/config', 'w+');
 	fs.writeSync(fd, '[default]\n');
+	fs.writeSync(fd, 'region=eu-central-1\n');
 	fs.writeSync(fd, 'aws_access_key_id=');
 	fs.writeSync(fd, json.AccessKeyId + '\n');
 	fs.writeSync(fd, 'aws_secret_access_key=');
 	fs.writeSync(fd, json.SecretAccessKey + '\n');
-	fs.writeSync(fd, 'region=eu-central-1\n');
+	fs.writeSync(fd, 'aws_session_token=');
+	fs.writeSync(fd, json.Token + '\n');
 	fs.closeSync(fd);
 
 }
@@ -46,7 +48,6 @@ function getCredentials(iamRole, callback) {
 
 getIamRole(function(role) { 
 	getCredentials(role, function(json) { 
-		writeAwsConfigFile('/home/ubuntu', json);
-		writeAwsConfigFile('/root', json);
+		writeAwsConfigFile(process.argv[2], json);
 	})
 });
